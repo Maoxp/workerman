@@ -140,7 +140,7 @@ class AsyncUdpConnection extends UdpConnection
         if ($data !== null) {
             $this->send($data, $raw);
         }
-        Worker::$globalEvent->del($this->_socket, EventInterface::EV_READ);
+        Worker::$globalEvent->offReadable($this->_socket);
         \fclose($this->_socket);
         $this->connected = false;
         // Try to emit onClose callback.

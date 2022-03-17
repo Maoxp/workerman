@@ -524,7 +524,7 @@ class TcpConnection extends ConnectionInterface
      */
     public function pauseRecv()
     {
-        Worker::$globalEvent->del($this->_socket, EventInterface::EV_READ);
+        Worker::$globalEvent->offReadable($this->_socket);
         $this->_isPaused = true;
     }
 
@@ -697,7 +697,7 @@ class TcpConnection extends ConnectionInterface
         \restore_error_handler();
         if ($len === \strlen($this->_sendBuffer)) {
             $this->bytesWritten += $len;
-            Worker::$globalEvent->del($this->_socket, EventInterface::EV_WRITE);
+            Worker::$globalEvent->offWritable($this->_socket);
             $this->_sendBuffer = '';
             // Try to emit onBufferDrain callback when the send buffer becomes empty.
             if ($this->onBufferDrain) {
