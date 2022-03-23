@@ -1793,7 +1793,6 @@ class Worker
             }
         } // For child processes.
         else {
-            usleep(10000);
             // Execute exit.
             foreach (static::$_workers as $worker) {
                 if(!$worker->stopping){

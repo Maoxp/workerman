@@ -46,7 +46,7 @@ class Http
     protected static $_uploadTmpDir = '';
 
     /**
-     * Open cache.
+     * Cache.
      *
      * @var bool.
      */

@@ -187,6 +187,13 @@ class TcpConnection extends ConnectionInterface
     protected static $_idRecorder = 1;
 
     /**
+     * Cache.
+     *
+     * @var bool.
+     */
+    protected static $_enableCache = true;
+
+    /**
      * Socket
      *
      * @var resource
@@ -580,7 +587,7 @@ class TcpConnection extends ConnectionInterface
         } else {
             $this->bytesRead += \strlen($buffer);
             if ($this->_recvBuffer === '') {
-                if (!isset($requests[512]) && isset($requests[$buffer])) {
+                if (static::$_enableCache && !isset($requests[512]) && isset($requests[$buffer])) {
                     ++self::$statistics['total_request'];
                     $request = $requests[$buffer];
                     if ($request instanceof Request) {
@@ -651,7 +658,7 @@ class TcpConnection extends ConnectionInterface
                 try {
                     // Decode request buffer before Emitting onMessage callback.
                     $request = $this->protocol::decode($one_request_buffer, $this);
-                    if ((!\is_object($request) || $request instanceof Request) && $one && !isset($one_request_buffer[512])) {
+                    if (static::$_enableCache && (!\is_object($request) || $request instanceof Request) && $one && !isset($one_request_buffer[512])) {
                         $requests[$one_request_buffer] = $request;
                         if (\count($requests) > 512) {
                             unset($requests[\key($requests)]);
@@ -951,6 +958,16 @@ class TcpConnection extends ConnectionInterface
             }
             unset(static::$connections[$this->_id]);
         }
+    }
+
+    /**
+     * Enable or disable Cache.
+     *
+     * @param mixed $value
+     */
+    public static function enableCache($value)
+    {
+        static::$_enableCache = (bool)$value;
     }
 
     /**
