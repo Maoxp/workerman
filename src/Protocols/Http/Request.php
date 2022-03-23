@@ -225,7 +225,7 @@ class Request
     public function host($without_port = false)
     {
         $host = $this->header('host');
-        if ($without_port && $pos = \strpos((string)$host, ':')) {
+        if ($host && $without_port && $pos = \strpos($host, ':')) {
             return \substr($host, 0, $pos);
         }
         return $host;
